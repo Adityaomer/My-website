@@ -1,146 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Classic Colorful Page</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Temple Run – GitHub Edition</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: "Georgia", "Times New Roman", serif;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb);
-      min-height: 100vh;
-      color: #333;
-      overflow: hidden;
-    }
+<style>
+:root{
+  --glow: gold;
+  --trail: rgba(255,215,0,.5);
+}
 
-    header {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
+html,body{
+  margin:0;
+  overflow:hidden;
+  background:#000;
+  font-family:Segoe UI,Arial;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 2.8rem;
-      color: #6a1b9a;
-      letter-spacing: 2px;
-    }
+/* SCENE */
+#scene{
+  width:100vw;
+  height:100vh;
+  perspective:1400px;
+  background:
+    radial-gradient(circle at top,#134e4a,#020b06),
+    linear-gradient(#000,#020b06);
+  transition:transform .1s;
+}
 
-    header p {
-      font-size: 1.1rem;
-      color: #555;
-      margin-top: 8px;
-    }
+/* BACKGROUND FX */
+#bg{
+  position:absolute;
+  inset:-40%;
+  background:
+    radial-gradient(circle,rgba(255,255,255,.08) 2%,transparent 3%);
+  animation:move 40s linear infinite;
+}
+@keyframes move{
+  to{background-position:-2000px 0}
+}
 
-    main {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 50px 20px;
-    }
+/* ROAD */
+#road{
+  position:absolute;
+  width:320%;
+  height:220%;
+  left:50%;
+  bottom:-55%;
+  background:linear-gradient(#3b2a14,#120a05);
+  transform:translateX(-50%) rotateX(72deg);
+}
 
-    .card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 40px;
-      max-width: 500px;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    }
+/* PLAYER */
+#player{
+  position:absolute;
+  bottom:120px;
+  left:50%;
+  width:46px;
+  height:70px;
+  border-radius:14px;
+  transform:translateX(-50%);
+  box-shadow:0 0 40px var(--glow);
+  transition:left .18s;
+}
 
-    .card h2 {
-      font-size: 2rem;
-      color: #d81b60;
-      margin-bottom: 15px;
-    }
+/* TRAIL */
+#trail{
+  position:absolute;
+  width:70px;
+  height:140px;
+  background:radial-gradient(circle,var(--trail),transparent);
+  filter:blur(22px);
+  pointer-events:none;
+}
 
-    .card p {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #444;
-      margin-bottom: 30px;
-    }
+/* BOSS */
+#boss{
+  position:absolute;
+  bottom:-220px;
+  left:50%;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle,#700,#000);
+  box-shadow:0 0 160px red;
+  transform:translateX(-50%);
+}
 
-    .btn {
-      display: inline-block;
-      padding: 12px 30px;
-      font-size: 1rem;
-      border-radius: 30px;
-      border: none;
-      cursor: pointer;
-      color: #fff;
-      background: linear-gradient(45deg, #7b1fa2, #e91e63);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
+/* SPEED */
+#speedLines{
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.1) 2px,
+    transparent 4px
+  );
+  opacity:0;
+  pointer-events:none;
+}
 
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
+/* HUD */
+#hud{
+  position:absolute;
+  top:12px;
+  left:12px;
+  color:white;
+  font-size:16px;
+  text-shadow:0 0 15px black;
+}
 
-    footer {
-      text-align: center;
-      padding: 15px;
-      font-size: 0.9rem;
-      color: #333;
-    }
+/* OVERLAYS */
+.overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  background:radial-gradient(circle,#1b5e20,#020b06);
+}
 
-    /* Hide game canvas initially */
-    #gameContainer {
-      display: none;
-    }
-  </style>
+button{
+  padding:18px 60px;
+  font-size:24px;
+  border:none;
+  border-radius:60px;
+  background:linear-gradient(45deg,#ff512f,#f09819);
+  color:white;
+  box-shadow:0 0 50px orange;
+}
+button:active{transform:scale(.95)}
+
+/* CHARACTER GRID */
+#chars{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.char{
+  width:90px;height:120px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow:0 0 30px rgba(255,255,255,.3);
+}
+.char:hover{transform:scale(1.1)}
+</style>
 </head>
 
 <body>
 
-  <div id="menu">
-    <header>
-      <h1>Classic Colors</h1>
-      <p>A timeless look with a modern splash of color</p>
-    </header>
+<div id="scene">
+  <div id="bg"></div>
+  <div id="road"></div>
+  <div id="boss"></div>
+  <div id="trail"></div>
+  <div id="player"></div>
+  <div id="speedLines"></div>
 
-    <main>
-      <div class="card">
-        <h2>Welcome</h2>
-        <p>
-          This is a clean, classic, and colorful HTML layout.
-          Perfect for a game menu, landing page, or personal project.
-        </p>
-        <button class="btn" onclick="startGame()">Get Started</button>
-      </div>
-    </main>
+  <div id="hud">
+    Score: <span id="score">0</span><br>
+    Speed: <span id="spd">10</span><br>
+    Character: <span id="cname"></span>
+  </div>
+</div>
 
-    <footer>
-      © 2026 • Designed with ❤️ and color
-    </footer>
+<!-- START -->
+<div id="start" class="overlay">
+  <h1>TEMPLE RUN</h1>
+  <p>GitHub Pages Edition</p>
+
+  <div id="chars">
+    <div class="char" style="background:gold" onclick="pick('Runner')">Runner</div>
+    <div class="char" style="background:#4fc3f7" onclick="pick('Ninja')">Ninja</div>
+    <div class="char" style="background:#e53935" onclick="pick('Warrior')">Warrior</div>
+    <div class="char" style="background:#2e7d32" onclick="pick('Shadow')">Shadow</div>
   </div>
 
-  <!-- Game Container -->
-  <div id="gameContainer"></div>
+  <br>
+  <button onclick="startGame()">START RUN</button>
+</div>
 
-  <!-- Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158/build/three.min.js"></script>
+<!-- GAME OVER -->
+<div id="over" class="overlay" style="display:none">
+  <h1>GAME OVER</h1>
+  <p id="finalScore"></p>
+  <button onclick="location.reload()">RESTART</button>
+</div>
 
-  <!-- Start Game Script -->
-  <script>
-    function startGame() {
-      // Hide menu
-      document.getElementById("menu").style.display = "none";
+<script>
+let lane=2,jumping=false,score=0,speed=10,chase=420;
+let running=false,character=null,jumpBoost=1,bossSlow=1,invincible=false;
 
-      // Change background for game
-      document.body.style.background = "#000";
+const player=document.getElementById("player");
+const trail=document.getElementById("trail");
+const boss=document.getElementById("boss");
+const scene=document.getElementById("scene");
+const speedLines=document.getElementById("speedLines");
 
-      // Load game.js dynamically
-      const script = document.createElement("script");
-      script.src = "game.js";
-      document.body.appendChild(script);
+function pick(c){
+  character=c;
+  document.getElementById("cname").innerText=c;
+
+  if(c==="Runner"){setChar("gold","rgba(255,215,0,.5)",1,1);}
+  if(c==="Ninja"){setChar("#4fc3f7","rgba(79,195,247,.5)",1.4,1);}
+  if(c==="Warrior"){setChar("#e53935","rgba(229,57,53,.5)",1,0.7);}
+  if(c==="Shadow"){
+    setChar("#2e7d32","rgba(50,255,50,.5)",1,1);
+    invincible=true;
+    setTimeout(()=>invincible=false,5000);
+  }
+}
+
+function setChar(color,trailC,jump,bslow){
+  player.style.background=color;
+  document.documentElement.style.setProperty("--glow",color);
+  document.documentElement.style.setProperty("--trail",trailC);
+  jumpBoost=jump;bossSlow=bslow;
+}
+
+function startGame(){
+  if(!character) return alert("Choose a character!");
+  document.getElementById("start").style.display="none";
+  running=true;
+  loop();
+}
+
+document.addEventListener("keydown",e=>{
+  if(!running) return;
+  if(e.key==="ArrowLeft"&&lane>1){lane--;updateLane();}
+  if(e.key==="ArrowRight"&&lane<3){lane++;updateLane();}
+  if((e.key==="ArrowUp"||e.key===" ")&&!jumping) jump();
+});
+document.addEventListener("touchstart",()=>!jumping&&jump());
+
+function updateLane(){
+  player.style.left=["38%","50%","62%"][lane-1];
+}
+
+function jump(){
+  jumping=true;
+  let h=0,max=150*jumpBoost;
+  let up=setInterval(()=>{
+    h+=12;player.style.bottom=120+h+"px";
+    if(h>=max){
+      clearInterval(up);
+      let down=setInterval(()=>{
+        h-=12;player.style.bottom=120+h+"px";
+        if(h<=0){clearInterval(down);jumping=false;}
+      },20);
     }
-  </script>
+  },20);
+}
+
+function gameOver(){
+  running=false;
+  document.getElementById("over").style.display="flex";
+  document.getElementById("finalScore").innerText="Score: "+score;
+}
+
+function loop(){
+  setInterval(()=>{
+    if(!running) return;
+
+    score++;
+    speed+=0.02;
+    chase-=0.4*bossSlow;
+
+    document.getElementById("score").innerText=score;
+    document.getElementById("spd").innerText=speed.toFixed(1);
+
+    boss.style.bottom=(-220+(420-chase))+"px";
+    trail.style.left=player.style.left;
+    trail.style.bottom="110px";
+
+    speedLines.style.opacity=Math.min((speed-10)/10,.6);
+    scene.style.transform=`scale(${1+speed/120})`;
+
+    if(chase<80) scene.style.transform+=` rotate(${Math.sin(score)*.4}deg)`;
+
+    if(chase<=0 && !invincible) gameOver();
+  },50);
+}
+</script>
 
 </body>
 </html>
