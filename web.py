@@ -1,6 +1,6 @@
 import os
 import pymongo
-from flask import Flask, jsonify
+from flask import jsonify
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
