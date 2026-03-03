@@ -8,11 +8,12 @@ mongo_client = pymongo.MongoClient(MONGO_URL)
 db = mongo_client["mangal_hardware"]
 collection = db["categories"]
 
+API_ID = int("23599783")
+API_HASH ="62c4987db06716e25c4d68dcdcdc1ea5"
 # Telethon Configuration
-API_ID = os.environ.get("API_ID")  # Your API ID
-API_HASH = os.environ.get("API_HASH")  # Your API Hash
-BOT_TOKEN = os.environ.get("BOT_TOKEN")  # Your bot token
-
+API_ID = os.environ.get("API_ID") or API_ID
+API_HASH = os.environ.get("API_HASH") or API_HASH
+BOT_TOKEN = "7728650601:AAHn1QxRambFq3yGsbuDAcYewXxHGjR-IdA"
 # Initialize the Telethon client
 client = TelegramClient('bot', API_ID, API_HASH).start(bot_token=BOT_TOKEN)
 
