@@ -10,8 +10,6 @@ mongo_client = pymongo.MongoClient(MONGO_URL)
 db = mongo_client["mangal_hardware"]
 collection = db["categories"]
 
-# Initialize Flask app (optional if you want to run it as a web server)
-app = Flask(__name__)
 
 # Global variable to hold user state
 user_data = {}
