@@ -13,7 +13,7 @@ commands:
 
 repository:
   branch: "main"
-  auto_deploy: False
+  auto_deploy: true
 
 env:
   - ENVIRONMENT:production
