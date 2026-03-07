@@ -1,7 +1,8 @@
 user:
   name: Adityaomer
   github: My-website
-runtime: python:3.11
+runtime: python
+image: "python:3.11-slim"
 
 commands:
   package: "nano inxi"
