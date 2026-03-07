@@ -1,16 +1,17 @@
 user:
   name: Adityaomer
   github: My-website
-
-language: "python"
-python_version: "3.10"
+runtime: python:3.11
 
 commands:
+  package: "nano inxi"
   build:
     - "pip install -r requirements.txt"
-  package:
-    - "nano inxi"
-  start:
-    - "python3 web.py"
+  start: "python3 web.py"
+
+repository:
+  branch: "main"
+  auto_deploy: False
+
 env:
-  - "ENVIRONMENT=production"
+  - ENVIRONMENT:production
