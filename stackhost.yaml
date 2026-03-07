@@ -2,8 +2,8 @@ user:
   name: Adityaomer
   github: My-website
 
-runtime: python
-image: "python:3.11-slim"
+runtime: 
+  image: "python:3.11-slim"
 
 commands:
   package:"inxi"
