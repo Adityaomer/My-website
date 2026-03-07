@@ -75,6 +75,38 @@ async def delete_category(event):
     except (IndexError, ValueError):
         await event.respond("Please provide a valid index after /delete command.")
 
-# Start the client
+# ... [previous code remains unchanged] ...
+
+@client.on(events.NewMessage(pattern='/delete_all'))
+async def delete_all(event):
+    # Update the document with _id: 0 to set its content to an empty object
+    result = collection.update_one({"_id": 0}, {"$set": {"category": []}})
+
+    if result.modified_count > 0:
+        response_message = "All categories have been deleted successfully."
+    else:
+        response_message = "No categories found to delete or an error occurred."
+
+    await event.respond(response_message)
+# ... [previous code remains unchanged] ...
+
+@client.on(events.NewMessage(pattern='/getdata'))
+async def get_data(event):
+    # Retrieve all categories from the MongoDB collection
+    category_data = collection.find_one({}, {"_id": 0})
+
+    if category_data and "category" in category_data:
+        categories = category_data["category"]
+        if categories:
+            response_message = "Current Categories:\n"
+            for index, category in enumerate(categories):
+                response_message += f"{index}: {category['name']} (Image URL: {category['image']})\n"
+        else:
+            response_message = "No categories found."
+    else:
+        response_message = "No categories found."
+
+    await event.respond(response_message)
+
 if __name__ == "__main__":
     client.run_until_disconnected()
