@@ -1,6 +1,6 @@
 user:
-  name: Adityaomer
-  github: My-website
+  name: "Adityaomer"
+  github: "My-website"
 
 runtime: 
   runtimes: python
