@@ -24,17 +24,7 @@ user_data = {}
 async def start(event):
     await event.respond("Welcome! Use /add to add a category or /delete <index> to delete a category.")
 
-@client.on(events.NewMessage(pattern='/add'))
-async def add_category(event):
-    await event.respond("Please send me the category name.")
-    user_data[event.chat_id] = {"step": "name"}
 
-@client.on(events.NewMessage())
-async def receive_name(event):
-    if event.chat_id in user_data and user_data[event.chat_id]["step"] == "name":
-        user_data[event.chat_id]["name"] = event.message.message
-        await event.respond("Now send me the image URL.")
-        user_data[event.chat_id]["step"] = "image"
 
 @client.on(events.NewMessage())
 async def receive_image(event):
@@ -55,6 +45,19 @@ async def receive_image(event):
         
         # Clean up user data
         del user_data[event.chat_id]
+
+@client.on(events.NewMessage())
+async def receive_name(event):
+    if event.chat_id in user_data and user_data[event.chat_id]["step"] == "name":
+        user_data[event.chat_id]["name"] = event.message.message
+        await event.respond("Now send me the image URL.")
+        user_data[event.chat_id]["step"] = "image"
+
+@client.on(events.NewMessage(pattern='/add'))
+async def add_category(event):
+    await event.respond("Please send me the category name.")
+    user_data[event.chat_id] = {"step": "name"}
+
 
 @client.on(events.NewMessage(pattern='/delete'))
 async def delete_category(event):
